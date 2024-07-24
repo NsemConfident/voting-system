@@ -1,29 +1,66 @@
 let votes = [0, 0, 0]; // Initialize vote counts for 3 candidates
+let userVote = null;   // Track the user's vote
+let isEditing = false; // Track if the user is in edit mode
 
 function vote(candidate) {
-    // Check if the user has already voted
-    if (localStorage.getItem('hasVoted')) {
-        document.getElementById('message').textContent = 'You have already voted! Thank you';
+    const messageElement = document.getElementById('message');
+
+    if (userVote === candidate) {
+        messageElement.textContent = 'You have already voted for this candidate!';
         return;
+    }
+
+    if (isEditing && userVote !== null) {
+        // User is changing their vote
+        votes[userVote - 1]--; // Decrement the previous vote
+        messageElement.textContent = 'You have changed your vote!';
+    } else if (userVote === null) {
+        // First time voting
+        messageElement.textContent = 'Thank you for voting!';
+    } else {
+        // Switching to a new vote without editing
+        messageElement.textContent = 'You have changed your vote!';
     }
 
     // Increment the vote count for the selected candidate
     votes[candidate - 1]++;
-    
-    // Update the display
+    userVote = candidate; // Update the user's vote
+    isEditing = false; // Reset editing mode
+
+    // Update the display of votes and total votes
+    updateVotesDisplay();
+    updateTotalVotesDisplay();
+    sortAndDisplayCandidates();
+}
+
+function editVote() {
+    if (userVote !== null) {
+        isEditing = true;
+        document.getElementById('message').textContent = 'Please select a new candidate to vote for.';
+    } else {
+        document.getElementById('message').textContent = 'You have not voted yet!';
+    }
+}
+
+function updateVotesDisplay() {
     document.querySelectorAll('.candidate').forEach((el, index) => {
         el.querySelector('.votes').textContent = votes[index];
     });
-
-    // Sort the candidates based on votes
-    sortCandidates();
-
-    // Set the flag in local storage to indicate the user has voted
-    localStorage.setItem('hasVoted', true);
-    document.getElementById('message').textContent = 'Thank you for voting!';
 }
 
-function sortCandidates() {
+function updateTotalVotesDisplay() {
+    const totalVotesContainer = document.getElementById('total-votes');
+    totalVotesContainer.innerHTML = '';
+    
+    votes.forEach((voteCount, index) => {
+        const candidateName = document.querySelector(`.candidate[data-id="${index + 1}"] .name`).textContent;
+        const voteText = document.createElement('div');
+        voteText.textContent = `${candidateName}: ${voteCount} votes`;
+        totalVotesContainer.appendChild(voteText);
+    });
+}
+
+function sortAndDisplayCandidates() {
     let candidates = Array.from(document.querySelectorAll('.candidate'));
 
     candidates.sort((a, b) => {
@@ -35,3 +72,7 @@ function sortCandidates() {
     let container = document.querySelector('.candidates');
     candidates.forEach(candidate => container.appendChild(candidate));
 }
+
+// Initial sort and display
+sortAndDisplayCandidates();
+updateTotalVotesDisplay();

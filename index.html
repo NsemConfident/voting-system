@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Vote for Your Favorite Candidate</h1>
+        <div class="candidates">
+            <div class="candidate" data-id="1">
+                <span class="votes">0</span>
+                <span class="name">Candidate 1</span>
+                <input type="radio" name="vote" onclick="vote(1)">
+            </div>
+            <div class="candidate" data-id="2">
+                <span class="votes">0</span>
+                <span class="name">Candidate 2</span>
+                <input type="radio" name="vote" onclick="vote(2)">
+            </div>
+            <div class="candidate" data-id="3">
+                <span class="votes">0</span>
+                <span class="name">Candidate 3</span>
+                <input type="radio" name="vote" onclick="vote(3)">
+            </div>
+        </div>
+        <div class="message" id="message"></div>
+        <div class="total-votes">
+            <h2>Total Votes:</h2>
+            <div id="total-votes"></div>
+        </div>
+        <!-- Add this inside the container, perhaps at the bottom of the voting options -->
+<button id="submit-button" onclick="submitVote()">Submit Vote</button>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
